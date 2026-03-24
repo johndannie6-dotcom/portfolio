@@ -3,22 +3,20 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-// middleware
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// 🔥 CONNECT TO MONGODB (NON-SRV — WORKS ON RENDER)
-async function connectDB() {
-  try {
-    await mongoose.connect("mongodb://admin:admin123@cluster0-shard-00-00.2gb8wnq.mongodb.net:27017,cluster0-shard-00-01.2gb8wnq.mongodb.net:27017,cluster0-shard-00-02.2gb8wnq.mongodb.net:27017/portfolioDB?ssl=true&replicaSet=atlas-2gb8wnq-shard-0&authSource=admin&retryWrites=true&w=majority");
+// 🔥 DEBUG: check env variable
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
-    console.log("MongoDB connected");
-  } catch (err) {
-    console.log("MongoDB ERROR:", err);
-  }
-}
-
-connectDB();
+// 🔥 CONNECT TO DB
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+  console.log("MongoDB connected");
+})
+.catch((err) => {
+  console.log("MongoDB ERROR:", err);
+});
 
 // schema
 const Contact = mongoose.model("Contact", {
@@ -27,24 +25,18 @@ const Contact = mongoose.model("Contact", {
   message: String
 });
 
-// route to save data
+// route
 app.post("/save", async (req, res) => {
   try {
-    console.log("Incoming data:", req.body);
-
-    const newContact = new Contact(req.body);
-    await newContact.save();
-
-    console.log("Saved successfully");
-
+    const data = new Contact(req.body);
+    await data.save();
     res.send("Saved!");
-  } catch (error) {
-    console.log("ERROR:", error);
+  } catch (err) {
+    console.log("SAVE ERROR:", err);
     res.status(500).send("Error saving");
   }
 });
 
-// server start
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
