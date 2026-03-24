@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // 🔥 SIMPLE & WORKING ATLAS CONNECTION
-mongoose.connect("mongodb://admin:admin123@ac-ftlfv9h-shard-00-00.krulaeh.mongodb.net:27017,ac-ftlfv9h-shard-00-01.krulaeh.mongodb.net:27017,ac-ftlfv9h-shard-00-02.krulaeh.mongodb.net:27017/?ssl=true&replicaSet=atlas-s2t37p-shard-0&authSource=admin&appName=Cluster0")
+mongoose.connect("mongodb://admin:admin123@cluster0-shard-00-00.2gb8wnq.mongodb.net:27017,cluster0-shard-00-01.2gb8wnq.mongodb.net:27017,cluster0-shard-00-02.2gb8wnq.mongodb.net:27017/portfolioDB?ssl=true&replicaSet=atlas-2gb8wnq-shard-0&authSource=admin&retryWrites=true&w=majority")
 .then(() => console.log("MongoDB connected"))
 .catch(err => console.log(err));
 
